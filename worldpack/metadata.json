@@ -1,5 +1,6 @@
 {
     "name": "world pack",
     "description": "concrnt.worldの基本絵文字パック",
-    "credits": ""
+    "credits": "",
+    "iconURL": "concrnt.png"
 }

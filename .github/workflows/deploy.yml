@@ -20,7 +20,7 @@ jobs:
         go-version: '1.22.5'
 
     - name: install builer
-      run: go install github.com/concrnt/emojipack-builder@v0.0.1
+      run: go install github.com/concrnt/emojipack-builder@v0.0.2
 
     - name: build
       run: emojipack-builder
