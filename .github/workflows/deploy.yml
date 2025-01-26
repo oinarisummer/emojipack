@@ -5,7 +5,7 @@ on:
       - main
 
 jobs:
-  Deploy:
+  build:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -25,10 +25,25 @@ jobs:
     - name: build
       run: emojipack-builder
       env:
-        BASE_URL: ${{ secrets.BaseURL }}
+        BASE_URL: ${{ steps.deployment.outputs.page_url }}
 
-    - name: sync with s3
-      run: aws s3 sync . s3://${{ secrets.BUCKET_NAME }} --exclude ".*" --endpoint-url ${{ secrets.ENDPOINT_URL }} --region auto
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    - name Upload static files as artifact
+      id: deployment
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: ./
+
+  # Deployment job
+  deploy:
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
